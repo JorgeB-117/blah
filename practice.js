@@ -1,138 +1,61 @@
-/////////CODING CHALLENGE 10
 
+document.addEventListener('DOMContentLoaded', function() {
+    // Get references to DOM elements
+    const priceDisplay = document.getElementById('priceDisplay');
+    const availabilityDisplay = document.getElementById('availabilityDisplay');
+    const sizeSelect = document.getElementById('size');
+    const purchaseButton = document.getElementById('purchaseButton');
+    const addProductForm = document.getElementById('addProductForm');
 
-
-///////111111111
-
-document.addEventListener('DOMContentLoaded', function(){
-    const sizeSelect = document.getElementById('size-select');
-    const priceShown = document.querySelector('.product-price');
-    const purchaseButton = document.querySelector('.purchase-button');
-    const stockStatus = document.createElement('p');
-    stockStatus.className = 'stock-status';
-const productList = document.querySelector('.product-list');
-const addProductForm = document.getElementById('add-product-form');
-
-    if(sizeSelect && sizeSelect.parentNode){
-        sizeSelect.parentNode.insertBefore(stockStatus,sizeSelect.nextSibling);
-    }
-    //stock data for dog collars
-    const stockData ={
-        small:15,
-        medium: 25,
-        large: 20,
-        'x-large': 12,
-        'xx-large':8
+    // Product information object
+    const products = {
+        small: { price: 10.00, availability: 'In Stock' },
+        medium: { price: 12.00, availability: 'Out of Stock' },
+        large: { price: 15.00, availability: 'In Stock' }
     };
 
+    // Function to update product information based on selected size
+    function updateProductInfo(size) {
+        const product = products[size];
+        if (product) {
+            // Update price display
+            priceDisplay.textContent = `Price: $${product.price.toFixed(2)}`;
+            // Update availability display
+            availabilityDisplay.textContent = `Availability: ${product.availability}`;
+             // Enable or disable purchase button based on availability
+            purchaseButton.disabled = product.availability === 'Out of Stock';
+        };
+    };
 
+// Event listener for size selection change
+    sizeSelect.addEventListener('change', function() {
+        updateProductInfo(sizeSelect.value);
+    });
 
-    function updatePriceAndAvailability(){
-        if(!sizeSelect || !priceShown || !purchaseButton || !stockStatus) return;
-        const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
-        const size = selectedOption.value.toLowerCase();
-        const priceValue = selectedOption.getAttribute('data-price');
-        const stockQuantity = stockData[size];
-        
-        priceShown.textContent = `$${priceValue}`;
+    // Initialize with the default selected size
+    updateProductInfo(sizeSelect.value);
 
-        if (stockQuantity > 0) {
-            purchaseButton.disabled = false;
-            purchaseButton.textContent = 'Add to Cart';
-            stockStatus.textContent = `In Stock: ${stockQuantity} available`;
-            stockStatus.style.color = 'pink';
+    // Event listener for form submission to add new products
+    addProductForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+        const newSize = document.getElementById('newSize').value;
+        const newPrice = parseFloat(document.getElementById('newPrice').value);
+        const newAvailability = document.getElementById('newAvailability').value;
+
+        // Validate form inputs
+        if (newSize && !isNaN(newPrice) && newAvailability) {
+            // Add new product to the products object
+            products[newSize] = { price: newPrice, availability: newAvailability };
+            alert('New product added successfully!');
+        } else {
+            alert('Please fill out all fields correctly.');
         }
-         else { 
-            purchaseButton.disabled = true;
-            purchaseButton.textContent = 'Out of Stock';
-            stockStatus.textContent = 'Out of Stock';
-            stockStatus.style.color = 'blue';
+    });
+    
+     // Event delegation for dynamically added elements
+     document.body.addEventListener('change', function(event) {
+        if (event.target && event.target.id === 'size') {
+            updateProductInfo(event.target.value);
         }
-    }
-    
-
-
-//create checkout event
-function completePurchase() {
-    if(!sizeSelect)return;
-    const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
-    const size = selectedOption.value;
-    const stockQuantity = stockData[size];
-    if (stockQuantity > 0) {
-        alert(`Thank you for shopping with PetSupplies! Your ${size} Dog collar is working to be shipped.`);
-        stockData[size]--;
-        updatePriceAndAvailability();
-    }else{
-        alert('Sorry, Our paws are working to get this back in stock');
-    }
-    
-}
-if (sizeSelect){
-    sizeSelect.addEventListener('change', updatePriceAndAvailability);
-}
-
-sizeSelect.addEventListener('change', updatePriceAndAvailability);
-purchaseButton.addEventListener('click', completePurchase);
-    
-updatePriceAndAvailability();
+    });
 });
-
-//Event Delegation for Dynamic Product List 
-function createProductElement(productData) {
-    const productElement = document.createElement('section');
-    productElement.className = 'product';
-    productElement.innerHTML = `
-    <h2 class = "product-name">${productData.name}</h2>
-    <p class = "product-price">$${productData.price}</p>
-    <div class = "product-options">
-    <label for = "size-select-${productData.id}">Size:</label>
-    <select id = "size-select-${productData.id}"name="size" class="size-select">
-    ${Object.entries(productData.sizes).map(([size, stock]) =>
-    `<option value="${size}" data-price="${productData.price}" data-stocks="${stock}">${size}</option>`
-).join('')}
-</select>
-</div>
-<p class="stock-status"></p>
-<button class="purchase-button">Add to Cart</button>
-`;
-return productElement;
-}
-function handleProductInteraction(event) {
-    const product = event.target.closest('.product');
-    if (!product) return;
-
-    const sizeSelect = product.querySelector('.size-select');
-    const priceShown = product.querySelector('.product-price');
-    const purchaseButton = product.querySelector('.purchase-button');
-    const stockStatus = product.querySelector('.stock-status');
-
-        if (event.target.classList.contains('size-select')) {
-            updatePriceAndAvailability(sizeSelect, priceShown, purchaseButton, stockStatus);
-        } else if (event.target.classList.contains('purchase-button')) {
-            completePurchase(sizeSelect, purchaseButton, stockStatus);
-        }
-}
-function addNewMerchandise(event) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const newMerchandise = {
-        id: Date.now(),
-        name: formData.get('name'),
-        price: formData.get('price'),
-        sizes:{
-            small: parseInt (formData.get('small-stock')),
-            medium: parseInt (formData.get('medium-stock')),
-            large: parseInt (formData.get('large-stock')),
-            'x-large': parseInt (formData.get('x-large-stock')),
-            'xx-large': parseInt (formData.get('xx-large-stock')),
-        }
-    };
-    const productElement = createProductElement (newMerchandise);
-    productList.appendChild(productElement);
-    event.target.reset();
-}
-
-productList.addEventListener('click', handleProductInteraction);
-productList.addEventListener('change', handleProductInteraction);
-addProductForm.addEventListener('submit', addNewMerchandise);
-
