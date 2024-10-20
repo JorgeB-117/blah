@@ -1,41 +1,39 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-    <meta charset ="UTF-8">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Page</title>
-    <body>
-        <main>
-            <div class="product-list">
-                <!--products available-->
-            </div>  
-            <form id="add-product-form">
-                <h3>Add Product</h3>
-                <input type="text" name="name"placeholder="Product Name" required>
-                <input type="number"name="price"placeholder="price"step="0.01"required>
-                <input type="number"name="small-stock"placeholder="Small Stock"required>
-                <input type="number"name="medium-stock"placeholder="Medium Stock"required>
-                <input type="number"name="large-stock"placeholder="Large Stock"required>
-                <input type="number"name="X-large-stock"placeholder="X-Large Stock"required>
-                <input type="number"name="XX-large-stock"placeholder="XX-Large Stock" required>
-                <button type="submit"> Add Product</button>
-            </form> 
-            <section class="product">
-<h2 class="product-name">Dog Collars</h2>
-<p class="product-price">$35.99</p>
-<div class="product-options">
-    <label for="size-select">Size:</label>
-    <select id="size-select" name="size">
-        <option value="small" data-price="35.99">Small:In Stock </option>
-        <option value="Medium" data-price="40.99">Medium:In Stock</option>
-        <option value="Large" data-price="44.99">Large:In Stock </option>
-        <option value="X-Large" data-price="48.99">X-Large:In Stock</option>
-        <option value="XX-Large" data-price="52.99">XX-Large:In Stock </option>
+    <title>Product page</title>
+    
+</head>
+<body>
+    <h2 id="product-name">Generic White T-Shirt</h2>
+    <p id="product-price">Price: $<span id="current-price">30.00</span></p>
+
+<label for="size-selector">Select Size:</label>
+    <select id="size-selector">
+        <option value="small" data-price="30" data-stock="in-stock">Small: In Stock</option>
+        <option value="medium"data-price="40" data-stock="in-stock">Medium: In Stock</option>
+        <option value="large"data-price="50" data-stock="in-stock">Large: In Stock</option>
+        <option value="extra large"data-price="60" data-stock="out-of-stock">Extra-Large: Out of Stock</option>
     </select>
-<button class="purchase-button"> Add to Cart</button>
-            </section>
-        </main>
-        <script src="practice.js"></script>
-    </body>
+
+    <button id="purchase-button">Purchase</button>
+
+    <hr>
+
+    <h3>Add New Product</h3>
+    <form id="add-product-form">
+        <input type="text" id="new-product-name" placeholder="Product Name" required>
+        <input type="text" id="new-product-price" placeholder="Price" required>
+        <input type="text" id="new-product-size" placeholder="Size" required>
+        <input type="text" id="new-product-stock" placeholder="In Stock/ Out of Stock" required>
+        <button type="submit">Add Product</button>
+    </form>
+    <div id="product-list"></div>
+
+    <script src="practice.js"></script>
+    
+</body>
 </html>
